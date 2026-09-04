@@ -8,21 +8,54 @@ $(document).ready(function () {
 
     /* =================================================================
        4.I - FREDDY VALENZUELA
-       Toggle effect: the hero button changes the background colour of
-       the page randomly.
-       This code is already written, but it only works once the hero
-       section exists with a button with id="hero-btn".
+       Toggle effect: the "View Campus" button of the hero paints the
+       page with a random colour of Yachay.
+
+       The colours are not generated at random out of the 16 million
+       possible ones: they are picked from the six of the university,
+       and each one has a light and a dark version so the text keeps
+       its contrast in both themes.
        ================================================================= */
 
-    $('#hero-btn').on('click', function () {
-        var letters = '0123456789ABCDEF';
-        var color = '#';
+    var YACHAY_LIGHT = [
+        '#fecaca',  // red
+        '#fde68a',  // yellow
+        '#bae6fd',  // sky blue
+        '#bbf7d0',  // green
+        '#99f6e4',  // turquoise
+        '#e7d3b8'   // light brown
+    ];
 
-        for (var i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
+    var YACHAY_DARK = [
+        '#7f1d1d',  // red
+        '#78350f',  // yellow
+        '#0c4a6e',  // sky blue
+        '#14532d',  // green
+        '#134e4a',  // turquoise
+        '#5b4636'   // light brown
+    ];
+
+    // remembering the last one avoids repeating a colour twice in a
+    // row, which looks like the button did nothing
+    var lastColour = -1;
+
+    $('#hero-btn').on('click', function () {
+        var index = Math.floor(Math.random() * YACHAY_LIGHT.length);
+
+        while (index === lastColour) {
+            index = Math.floor(Math.random() * YACHAY_LIGHT.length);
         }
 
-        $('body').css('background-color', color);
+        lastColour = index;
+
+        var palette = $('body').hasClass('dark') ? YACHAY_DARK : YACHAY_LIGHT;
+        $('body').css('background-color', palette[index]);
+
+        // and it takes you to the gallery, which is where the new colour
+        // is actually visible (the hero has its own background).
+        // scrollIntoView respects the scroll-margin-top of style.css, so
+        // the sticky navbar does not cover the title
+        document.getElementById('gallery').scrollIntoView();
     });
 
     /* ===================== END OF FREDDY'S ZONE ====================== */
@@ -42,6 +75,14 @@ $(document).ready(function () {
     $toggle.on('click', function () {
         $body.toggleClass('dark');
         localStorage.setItem('theme', $body.hasClass('dark') ? 'dark' : 'light');
+
+        // the hero button paints the body with an inline colour, and an
+        // inline style beats the theme: swap it for the version of the
+        // theme we just switched to
+        if (lastColour >= 0) {
+            var palette = $body.hasClass('dark') ? YACHAY_DARK : YACHAY_LIGHT;
+            $body.css('background-color', palette[lastColour]);
+        }
     });
 
 

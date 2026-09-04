@@ -226,6 +226,29 @@ img {
     padding: 48px 20px;
 }
 
+/* The navbar is sticky and 81px tall, so jumping to #gallery or to
+   #contact would leave the title hidden behind it. scroll-margin-top
+   tells the browser to stop that much earlier on every jump target. */
+#main,
+.hero-section,
+.section {
+    scroll-margin-top: 100px;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* under 768px the navbar wraps into two rows and grows to 119px */
+@media (max-width: 768px) {
+
+    #main,
+    .hero-section,
+    .section {
+        scroll-margin-top: 140px;
+    }
+}
+
 .section-intro {
     max-width: 65ch;
     color: var(--muted);
@@ -827,6 +850,10 @@ body.dark .error-msg {
 
 /* users who prefer no animation */
 @media (prefers-reduced-motion: reduce) {
+
+    html {
+        scroll-behavior: auto;
+    }
 
     .btn,
     .gallery-img,
