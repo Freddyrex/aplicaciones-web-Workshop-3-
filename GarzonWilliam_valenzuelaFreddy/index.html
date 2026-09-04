@@ -7,7 +7,6 @@
     <title>Pagina Web </title>
     <link rel="stylesheet" href="style.css">
 
-    <!-- jQuery 3.7.1 (latest release) - required by point 1.II -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 
@@ -15,32 +14,28 @@
 
     <a class="skip-link" href="#main">Skip to main content</a>
 
-    <!-- ==================================================================
-         PART 1 + 2 - Freddy Valenzuela
-         1) Navigation bar with at least three links
-         2) Hero section: heading + short description + button
-            (the button needs id="hero-btn" so the jQuery random
-             background colour effect can hook into it)
-         Write your code between these two markers.
-         ================================================================== -->
+    <header class="navbar">
+        <div class="logo">
+            <img src="assets/logo_U.png" alt="Yachay Tech Logo">
+        </div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#gallery">Campus Map</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </header>
 
-    <!-- TODO Freddy: <header class="navbar"> ... </header> -->
-    <!-- TODO Freddy: <section id="hero"> ... <button id="hero-btn">...</button> </section> -->
-
-    <!-- ===================== END OF FREDDY'S ZONE ====================== -->
-
+    <section id="home" class="hero-section">
+        <div class="hero-content">
+            <h1>Explore the Yachay Tech Campus</h1>
+            <p>Discover the City of Knowledge through our interactive map and easily find every faculty, laboratory, and
+                student space.</p>
+            <button id="hero-btn" class="hero-btn">Change Background Color</button>
+        </div>
+    </section>
 
     <main id="main">
 
-        <!-- ==============================================================
-             PART 3 - William Garzon
-             Image gallery with at least four images.
-             Each <img> carries data-caption so the jQuery modal
-             (point 4.II) can show the caption of the enlarged photo.
-             NOTE: the photos are placeholders. To use real campus
-             photos, put them in an /img folder and replace both the
-             src and the alt text of each image.
-             ============================================================== -->
         <section id="gallery" class="section">
             <h2>Campus gallery</h2>
             <p class="section-intro">Click on any photo to enlarge it.</p>
@@ -66,13 +61,15 @@
                 </figure>
 
                 <figure class="gallery-item">
-                    <img class="gallery-img" tabindex="0" src="assets/Residencias_Departamentos_Bloques_Universidad_Yachay_Tech-1536x1024.jpg"
+                    <img class="gallery-img" tabindex="0"
+                        src="assets/Residencias_Departamentos_Bloques_Universidad_Yachay_Tech-1536x1024.jpg"
                         alt="Bloques de residencias" data-caption="Bloques">
                     <figcaption>Bloques</figcaption>
                 </figure>
 
                 <figure class="gallery-item">
-                    <img class="gallery-img" tabindex="0" src="assets/Residencias_Departamentos_Multifamiliares_Universidad_Yachay_Tech-2048x1365.jpg"
+                    <img class="gallery-img" tabindex="0"
+                        src="assets/Residencias_Departamentos_Multifamiliares_Universidad_Yachay_Tech-2048x1365.jpg"
                         alt="Multifamiliares" data-caption="Multifamiliares">
                     <figcaption>Multifamiliares</figcaption>
                 </figure>
@@ -86,8 +83,6 @@
             </div>
         </section>
 
-        <!-- Popup modal used by the gallery (point 4.II).
-             It starts hidden; script.js fills #modal-img and shows it. -->
         <div id="image-modal" class="modal" role="dialog" aria-modal="true" aria-label="Enlarged image"
             aria-hidden="true">
             <div class="modal-box">
@@ -98,16 +93,6 @@
         </div>
 
 
-        <!-- ==============================================================
-             PART 4 - William Garzon
-             Contact form (name, email, message + submit button).
-             This is the Workshop 2 contact page, reused here as one
-             single <section> of the Workshop 3 single-page site.
-             The form uses novalidate on purpose: the browser must NOT
-             block the submit event, otherwise the jQuery validation of
-             point 4.III would never run. The required attributes are
-             kept as documentation and as a fallback.
-             ============================================================== -->
         <section id="contact" class="section">
             <h2>Contact the university</h2>
             <p class="section-intro">
@@ -310,7 +295,6 @@
         <p>Web Applications &ndash; Workshop 3 &ndash; HTML5, CSS and jQuery</p>
     </footer>
 
-    <!-- Our own script, loaded after the DOM and after jQuery -->
     <script src="script.js"></script>
 
 </body>
