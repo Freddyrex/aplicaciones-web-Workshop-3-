@@ -1,1 +1,419 @@
+/* =====================================================================
+   Web Applications - Workshop 3
+   William Garzon & Freddy Valenzuela
+   ===================================================================== */
 
+
+/* =====================================================================
+   0. BASE COMPARTIDA - PARA QUE NO LE PIENSES
+   ===================================================================== */
+
+:root {
+    --brand: #0f766e;
+    --brand-dark: #115e59;
+    --brand-light: #ccfbf1;
+    --ink: #1f2937;
+    --muted: #6b7280;
+    --line: #d1d5db;
+    --surface: #ffffff;
+    --bg: #f4f6f8;
+    --danger: #b91c1c;
+    --radius: 8px;
+    --shadow: 0 2px 6px rgba(0, 0, 0, .12);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink);
+    /* the jQuery hero button (point 4.I) overwrites this colour */
+    background-color: var(--bg);
+}
+
+h1,
+h2,
+h3 {
+    line-height: 1.25;
+    color: var(--brand-dark);
+}
+
+a {
+    color: var(--brand-dark);
+}
+
+img {
+    max-width: 100%;
+}
+
+/* Accessibility: the "Skip to main content" link only shows on focus */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+}
+
+.skip-link:focus {
+    left: 8px;
+    top: 8px;
+    z-index: 100;
+    padding: 8px 12px;
+    background: var(--surface);
+    border: 2px solid var(--brand);
+    border-radius: var(--radius);
+}
+
+/* Every section shares the same centred column */
+.section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 48px 20px;
+}
+
+.section-intro {
+    max-width: 65ch;
+    color: var(--muted);
+}
+
+/* Shared buttons - hover effect required by point 3.III */
+.btn {
+    padding: 10px 20px;
+    font: inherit;
+    color: var(--ink);
+    background-color: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background-color .2s, color .2s, transform .2s;
+}
+
+.btn:hover {
+    background-color: var(--brand-light);
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: var(--brand);
+    border-color: var(--brand);
+}
+
+.btn-primary:hover {
+    background-color: var(--brand-dark);
+}
+
+.btn:focus-visible {
+    outline: 3px solid var(--brand);
+    outline-offset: 2px;
+}
+
+footer {
+    padding: 24px 20px;
+    text-align: center;
+    color: #e5e7eb;
+    background-color: var(--brand-dark);
+}
+
+footer p {
+    margin: 4px 0;
+}
+
+
+
+/* TODO Freddy: .navbar, .nav-list, .nav-list a:hover, #hero, #hero-btn */
+
+/* ======================= END OF FREDDY'S ZONE ======================== */
+
+
+/* =====================================================================
+   3. WILLIAM GARZON - image gallery (CSS Grid)
+   ===================================================================== */
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.gallery-item {
+    /* <figure> has a default margin, remove it */
+    margin: 0;
+    overflow: hidden;
+    background-color: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.gallery-img {
+    display: block;
+    width: 100%;
+    /* all the photos have different proportions: crop them to the
+       same box so the grid stays even */
+    height: 220px;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform .3s, filter .3s;
+}
+
+/* hover effect on the photos */
+.gallery-item:hover .gallery-img {
+    transform: scale(1.06);
+    filter: brightness(1.05);
+}
+
+/* the photos are reachable with the keyboard (tabindex="0") */
+.gallery-img:focus-visible {
+    outline: 3px solid var(--brand);
+    outline-offset: -3px;
+}
+
+.gallery-item figcaption {
+    padding: 10px 12px;
+    font-size: .95rem;
+    font-weight: bold;
+    color: var(--brand-dark);
+    text-align: center;
+}
+
+
+/* ---------- Popup modal of the gallery (point 4.II) ----------
+   The modal is always display:flex so the photo stays centred;
+   it is hidden with opacity + visibility, which also gives a fade.
+   script.js only has to add/remove the class .is-open           */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background-color: rgba(0, 0, 0, .8);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .25s, visibility .25s;
+}
+
+.modal.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-box {
+    position: relative;
+    max-width: 900px;
+    width: 100%;
+    padding: 16px;
+    background-color: var(--surface);
+    border-radius: var(--radius);
+    text-align: center;
+}
+
+.modal-box img {
+    display: block;
+    width: 100%;
+    max-height: 75vh;
+    object-fit: contain;
+    border-radius: var(--radius);
+}
+
+#modal-caption {
+    margin: 12px 0 0;
+    font-weight: bold;
+    color: var(--brand-dark);
+}
+
+.modal-close {
+    position: absolute;
+    top: -14px;
+    right: -14px;
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: #fff;
+    background-color: var(--brand-dark);
+    border: 2px solid #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color .2s, transform .2s;
+}
+
+.modal-close:hover {
+    background-color: var(--danger);
+    transform: rotate(90deg);
+}
+
+
+/* =====================================================================
+   4. WILLIAM GARZON - contact form (CSS Grid + Flexbox)
+   ===================================================================== */
+
+#contact {
+    background-color: var(--surface);
+    border-top: 1px solid var(--line);
+}
+
+/* two columns of fieldsets side by side */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.form-col {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+fieldset {
+    padding: 16px 20px;
+    background-color: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+}
+
+legend {
+    padding: 0 8px;
+    font-weight: bold;
+    color: var(--brand-dark);
+}
+
+fieldset p {
+    margin: 0 0 14px;
+}
+
+/* labels of text fields on their own line; labels of radios and
+   checkboxes stay next to the control */
+label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+input[type="radio"] + label,
+input[type="checkbox"] + label {
+    display: inline;
+    font-weight: normal;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="number"],
+input[type="file"],
+select,
+textarea {
+    width: 100%;
+    padding: 8px 10px;
+    font: inherit;
+    color: var(--ink);
+    background-color: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 140px;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: 2px solid var(--brand);
+    outline-offset: 1px;
+    border-color: var(--brand);
+}
+
+/* --- validation states (point 4.III) ---
+   script.js adds .is-invalid to the field and writes the text
+   inside its <span class="error-msg"> */
+
+.is-invalid {
+    border-color: var(--danger);
+    background-color: #fef2f2;
+}
+
+.error-msg {
+    display: block;
+    min-height: 1em;
+    margin-top: 4px;
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--danger);
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.contact-list {
+    padding-left: 20px;
+    color: var(--muted);
+}
+
+
+/* =====================================================================
+   5. RESPONSIVENESS - media queries (point 3.IV)
+   ===================================================================== */
+
+/* tablets: gallery in two columns, form in one column */
+@media (max-width: 900px) {
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* phones: everything in one column and less padding */
+@media (max-width: 600px) {
+    .section {
+        padding: 32px 16px;
+    }
+
+    .gallery-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .gallery-img {
+        height: 200px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .modal {
+        padding: 12px;
+    }
+
+    .modal-close {
+        top: 4px;
+        right: 4px;
+    }
+}
+
+/* users who prefer no animation */
+@media (prefers-reduced-motion: reduce) {
+
+    .btn,
+    .gallery-img,
+    .modal,
+    .modal-close {
+        transition: none;
+    }
+}
