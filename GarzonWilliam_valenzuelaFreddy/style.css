@@ -259,6 +259,12 @@ footer p {
     border-top: 1px solid var(--line);
 }
 
+#contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
 /* two columns of fieldsets side by side */
 .form-grid {
     display: grid;
@@ -275,14 +281,26 @@ footer p {
 fieldset {
     padding: 16px 20px;
     background-color: var(--bg);
-    border: 1px solid var(--line);
+    border: 2px solid var(--line);
     border-radius: var(--radius);
+    display: flow-root;
+    /* <- contiene el float, si no se sale del borde inferior */
 }
 
 legend {
-    padding: 0 8px;
+    float: left;
+    /* <- lo saca del hueco del borde */
+    width: 100%;
+    /* <- ocupa toda la línea, nada se le pone al lado */
+    padding: 0;
+    margin-bottom: 12px;
     font-weight: bold;
     color: var(--brand-dark);
+}
+
+legend+* {
+    clear: both;
+    /* lo que viene después baja debajo del legend */
 }
 
 fieldset p {
@@ -354,13 +372,13 @@ textarea:focus {
 .form-actions {
     display: flex;
     gap: 12px;
-    margin-top: 24px;
 }
 
 .contact-list {
     padding-left: 20px;
     color: var(--muted);
 }
+
 
 
 /* =====================================================================
