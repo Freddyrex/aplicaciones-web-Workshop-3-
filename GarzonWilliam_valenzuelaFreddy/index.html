@@ -48,37 +48,37 @@
             <div class="gallery-grid">
 
                 <figure class="gallery-item">
-                    <img class="gallery-img" src="assets/senecyt.webp"
+                    <img class="gallery-img" tabindex="0" src="assets/senecyt.webp"
                         alt="Building Principal of Yachay Tech University" data-caption="Senecyt">
                     <figcaption>Senecyt</figcaption>
                 </figure>
 
                 <figure class="gallery-item">
-                    <img class="gallery-img" src="assets/Biblioteca_Universidad_Yachay_Tech_3.jpg"
+                    <img class="gallery-img" tabindex="0" src="assets/Biblioteca_Universidad_Yachay_Tech_3.jpg"
                         alt="Aulas B" data-caption="Aulas B">
                     <figcaption>Aulas B</figcaption>
                 </figure>
 
                 <figure class="gallery-item">
-                    <img class="gallery-img" src="assets/sala-capitular-nueva.jpg"
+                    <img class="gallery-img" tabindex="0" src="assets/sala-capitular-nueva.jpg"
                         alt="Sala Capitular" data-caption="Sala Capitular">
                     <figcaption>Sala Capitular</figcaption>
                 </figure>
 
                 <figure class="gallery-item">
-                    <img class="gallery-img" src="assets/Residencias_Departamentos_Bloques_Universidad_Yachay_Tech-1536x1024.jpg"
+                    <img class="gallery-img" tabindex="0" src="assets/Residencias_Departamentos_Bloques_Universidad_Yachay_Tech-1536x1024.jpg"
                         alt="Bloques de residencias" data-caption="Bloques">
                     <figcaption>Bloques</figcaption>
                 </figure>
 
                 <figure class="gallery-item">
-                    <img class="gallery-img" src="assets/Residencias_Departamentos_Multifamiliares_Universidad_Yachay_Tech-2048x1365.jpg"
+                    <img class="gallery-img" tabindex="0" src="assets/Residencias_Departamentos_Multifamiliares_Universidad_Yachay_Tech-2048x1365.jpg"
                         alt="Multifamiliares" data-caption="Multifamiliares">
                     <figcaption>Multifamiliares</figcaption>
                 </figure>
 
                 <figure class="gallery-item">
-                    <img class="gallery-img" src="assets/Residencias_Universidad_Yachay_Tech_8.jpg"
+                    <img class="gallery-img" tabindex="0" src="assets/Residencias_Universidad_Yachay_Tech_8.jpg"
                         alt="Patrimoniales" data-caption="Patrimoniales">
                     <figcaption>Patrimoniales</figcaption>
                 </figure>
@@ -150,11 +150,13 @@
                                 <label for="idnumber">National ID number:</label>
                                 <input type="text" id="idnumber" name="idnumber" maxlength="10"
                                     placeholder="1000000000">
+                                <span class="error-msg" id="error-idnumber"></span>
                             </p>
 
                             <p>
                                 <label for="phone">Phone number (optional):</label>
                                 <input type="tel" id="phone" name="phone" placeholder="099 999 9999">
+                                <span class="error-msg" id="error-phone"></span>
                             </p>
                         </fieldset>
 
