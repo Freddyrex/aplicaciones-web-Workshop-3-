@@ -188,6 +188,39 @@ body {
     background-color: var(--bg);
 }
 
+/* ---------- the flyer pattern (point 4.I) ----------
+   Every colour of Yachay belongs to one school, so the hero button
+   also tiles the logo of that school behind the page, like the paper
+   of an advertising flyer. It lives on a pseudo element because a
+   background-image cannot be faded on its own: here the opacity only
+   touches the pattern, never the text above it.
+   It is empty until the button is clicked for the first time. */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-image: var(--school-pattern, none);
+    /* "space" lays whole logos in a straight grid and splits the
+       leftover room into even gaps, so no tile is ever cut in half */
+    background-repeat: space;
+    background-size: 320px auto;
+    opacity: 0;
+    transition: opacity .45s ease;
+    pointer-events: none;
+}
+
+/* deliberately faint: the pattern is the paper of the flyer, the text
+   on top of it has to stay the thing you read */
+body.has-pattern::before {
+    opacity: .10;
+}
+
+/* the same tile washes out over a dark background, it needs more */
+body.dark.has-pattern::before {
+    opacity: .20;
+}
+
 h1,
 h2,
 h3 {
@@ -855,6 +888,7 @@ body.dark .error-msg {
         scroll-behavior: auto;
     }
 
+    body::before,
     .btn,
     .gallery-img,
     .modal,

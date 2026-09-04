@@ -17,39 +17,72 @@ $(document).ready(function () {
        its contrast in both themes.
        ================================================================= */
 
-    var YACHAY_LIGHT = [
-        '#fecaca',  // red
-        '#fde68a',  // yellow
-        '#bae6fd',  // sky blue
-        '#bbf7d0',  // green
-        '#99f6e4',  // turquoise
-        '#e7d3b8'   // light brown
+    // one row per school: its colour and its logo travel together, so
+    // they can never end up out of sync
+    var SCHOOLS = [
+        {
+            colour: 'red',
+            light: '#fecaca',
+            dark: '#7f1d1d',
+            logo: 'assets/escuela_mate.png'
+        },
+        {
+            colour: 'yellow',
+            light: '#fde68a',
+            dark: '#78350f',
+            logo: 'assets/escuela_fisica.png'
+        },
+        {
+            colour: 'sky blue',
+            light: '#bae6fd',
+            dark: '#0c4a6e',
+            logo: 'assets/escuela_quim.png'
+        },
+        {
+            colour: 'green',
+            light: '#bbf7d0',
+            dark: '#14532d',
+            logo: 'assets/escuela_bio.png'
+        },
+        {
+            colour: 'turquoise',
+            light: '#99f6e4',
+            dark: '#134e4a',
+            logo: 'assets/icon-agro.png'
+        },
+        {
+            colour: 'light brown',
+            light: '#e7d3b8',
+            dark: '#5b4636',
+            logo: 'assets/escuela_geo.png'
+        }
     ];
 
-    var YACHAY_DARK = [
-        '#7f1d1d',  // red
-        '#78350f',  // yellow
-        '#0c4a6e',  // sky blue
-        '#14532d',  // green
-        '#134e4a',  // turquoise
-        '#5b4636'   // light brown
-    ];
-
-    // remembering the last one avoids repeating a colour twice in a
+    // remembering the last one avoids repeating a school twice in a
     // row, which looks like the button did nothing
-    var lastColour = -1;
+    var lastSchool = -1;
+
+    // paints the page with the colour of one school and tiles its logo
+    function paintSchool(index) {
+        var school = SCHOOLS[index];
+        var body = $('body');
+
+        body.css('background-color', body.hasClass('dark') ? school.dark : school.light);
+
+        // the CSS variable feeds body::before, the tiled pattern
+        document.body.style.setProperty('--school-pattern', 'url("' + school.logo + '")');
+        body.addClass('has-pattern');
+    }
 
     $('#hero-btn').on('click', function () {
-        var index = Math.floor(Math.random() * YACHAY_LIGHT.length);
+        var index = Math.floor(Math.random() * SCHOOLS.length);
 
-        while (index === lastColour) {
-            index = Math.floor(Math.random() * YACHAY_LIGHT.length);
+        while (index === lastSchool) {
+            index = Math.floor(Math.random() * SCHOOLS.length);
         }
 
-        lastColour = index;
-
-        var palette = $('body').hasClass('dark') ? YACHAY_DARK : YACHAY_LIGHT;
-        $('body').css('background-color', palette[index]);
+        lastSchool = index;
+        paintSchool(index);
 
         // and it takes you to the gallery, which is where the new colour
         // is actually visible (the hero has its own background).
@@ -77,11 +110,10 @@ $(document).ready(function () {
         localStorage.setItem('theme', $body.hasClass('dark') ? 'dark' : 'light');
 
         // the hero button paints the body with an inline colour, and an
-        // inline style beats the theme: swap it for the version of the
-        // theme we just switched to
-        if (lastColour >= 0) {
-            var palette = $body.hasClass('dark') ? YACHAY_DARK : YACHAY_LIGHT;
-            $body.css('background-color', palette[lastColour]);
+        // inline style beats the theme: repaint the same school in the
+        // tone of the theme we just switched to
+        if (lastSchool >= 0) {
+            paintSchool(lastSchool);
         }
     });
 
