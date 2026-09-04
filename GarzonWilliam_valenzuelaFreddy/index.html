@@ -93,161 +93,146 @@
         </div>
 
 
+        <!-- ==============================================================
+             PART 4 - William Garzon
+             Contact form (name, email, message + submit button).
+             It is an adaptive panel: the reason chosen at the top decides
+             which questions are shown. Every field that only applies to
+             some reasons carries data-show-for="reason1 reason2", and
+             script.js shows or hides it. Hidden fields are disabled, so
+             they are neither validated nor submitted.
+             The form uses novalidate on purpose: the browser must NOT
+             block the submit event, otherwise the jQuery validation of
+             point 4.III would never run. The required attributes are
+             kept as documentation and as a fallback.
+             ============================================================== -->
         <section id="contact" class="section">
             <h2>Contact the university</h2>
             <p class="section-intro">
-                This form lets a student write to Yachay Tech University: to student
-                services, to the registrar office, or to the academic department in
-                charge of their programme. Fill in your academic details so that the
-                request reaches the right desk.
+                Tell us what you need and the form will ask only for the data
+                that desk requires.
             </p>
 
             <form id="contact-form" action="#" method="post" novalidate>
 
-                <div class="form-grid">
+                <!-- ---------- the request panel ----------
+                     the <select> at the top decides which questions are
+                     shown below: script.js reads it and hides the rest -->
+                <fieldset>
+                    <legend>Your request</legend>
 
-                    <div class="form-col">
+                    <p class="reason-field">
+                        <label for="reason">What do you need?</label>
+                        <select id="reason" name="reason">
+                            <option value="records">Academic records and certificates</option>
+                            <option value="enrollment">Enrollment and course registration</option>
+                            <option value="scholarship">Scholarships and financial aid</option>
+                            <option value="housing">Student housing</option>
+                            <option value="support">Technical support</option>
+                            <option value="other">Something else</option>
+                        </select>
+                    </p>
 
-                        <fieldset>
-                            <legend>Personal information</legend>
+                    <!-- script.js writes here the explanation of the chosen reason -->
+                    <p class="reason-hint" id="reason-hint"></p>
 
-                            <p>
-                                <label for="fullname">Full name:</label>
-                                <input type="text" id="fullname" name="fullname" placeholder="First and last name"
-                                    required>
-                                <span class="error-msg" id="error-fullname"></span>
-                            </p>
+                    <div class="fields-grid">
 
-                            <p>
-                                <label for="email">Email address:</label>
-                                <input type="email" id="email" name="email" placeholder="name@yachaytech.edu.ec"
-                                    required>
-                                <span class="error-msg" id="error-email"></span>
-                            </p>
+                        <p class="field">
+                            <label for="fullname">Full name:</label>
+                            <input type="text" id="fullname" name="fullname" placeholder="First and last name"
+                                required>
+                            <span class="error-msg" id="error-fullname"></span>
+                        </p>
 
-                            <p>
-                                <label for="birthdate">Date of birth:</label>
-                                <input type="date" id="birthdate" name="birthdate" required>
-                                <span class="error-msg" id="error-birthdate"></span>
-                            </p>
+                        <p class="field">
+                            <label for="email">Email address:</label>
+                            <input type="email" id="email" name="email" placeholder="name@yachaytech.edu.ec" required>
+                            <span class="error-msg" id="error-email"></span>
+                        </p>
 
-                            <p>
-                                <label for="idnumber">National ID number:</label>
-                                <input type="text" id="idnumber" name="idnumber" maxlength="10"
-                                    placeholder="1000000000">
-                                <span class="error-msg" id="error-idnumber"></span>
-                            </p>
+                        <p class="field">
+                            <label for="phone">Phone number <span class="optional">(optional)</span></label>
+                            <input type="tel" id="phone" name="phone" placeholder="099 999 9999">
+                            <span class="error-msg" id="error-phone"></span>
+                        </p>
 
-                            <p>
-                                <label for="phone">Phone number (optional):</label>
-                                <input type="tel" id="phone" name="phone" placeholder="099 999 9999">
-                                <span class="error-msg" id="error-phone"></span>
-                            </p>
-                        </fieldset>
+                        <p class="field" data-show-for="scholarship housing">
+                            <label for="birthdate">Date of birth:</label>
+                            <input type="date" id="birthdate" name="birthdate" required>
+                            <span class="error-msg" id="error-birthdate"></span>
+                        </p>
 
-                        <fieldset>
-                            <legend>Academic information</legend>
+                        <p class="field" data-show-for="records scholarship housing">
+                            <label for="idnumber">National ID number:</label>
+                            <input type="text" id="idnumber" name="idnumber" maxlength="10" placeholder="1000000000"
+                                required>
+                            <span class="error-msg" id="error-idnumber"></span>
+                        </p>
 
-                            <p>
-                                <label for="program">Degree program:</label>
-                                <select id="program" name="program" required>
-                                    <option value="">-- Select a program --</option>
-                                    <option value="it">Information Technology</option>
-                                    <option value="math">Mathematics</option>
-                                    <option value="physics">Physics</option>
-                                    <option value="biology">Biology</option>
-                                    <option value="chemistry">Chemistry</option>
-                                    <option value="geology">Geology</option>
-                                    <option value="nano">Nanotechnology</option>
-                                    <option value="agro">Agricultural Sciences</option>
-                                </select>
-                                <span class="error-msg" id="error-program"></span>
-                            </p>
+                        <p class="field" data-show-for="records enrollment scholarship">
+                            <label for="program">Degree program:</label>
+                            <select id="program" name="program" required>
+                                <option value="">-- Select a program --</option>
+                                <option value="it">Information Technology</option>
+                                <option value="math">Mathematics</option>
+                                <option value="physics">Physics</option>
+                                <option value="biology">Biology</option>
+                                <option value="chemistry">Chemistry</option>
+                                <option value="geology">Geology</option>
+                                <option value="nano">Nanotechnology</option>
+                                <option value="agro">Agricultural Sciences</option>
+                            </select>
+                            <span class="error-msg" id="error-program"></span>
+                        </p>
 
-                            <p>
-                                <label for="semester">Semester:</label>
-                                <input type="number" id="semester" name="semester" min="1" max="10" step="1" required>
-                                <span class="error-msg" id="error-semester"></span>
-                            </p>
-                        </fieldset>
+                        <p class="field" data-show-for="records enrollment scholarship">
+                            <label for="semester">Semester:</label>
+                            <input type="number" id="semester" name="semester" min="1" max="10" step="1" required>
+                            <span class="error-msg" id="error-semester"></span>
+                        </p>
 
-                    </div>
+                        <p class="field" data-show-for="enrollment housing">
+                            <label for="preferred">Date you need an answer by:</label>
+                            <input type="date" id="preferred" name="preferred">
+                            <span class="error-msg" id="error-preferred"></span>
+                        </p>
 
-                    <div class="form-col">
+                        <p class="field">
+                            <label for="urgency">Urgency:</label>
+                            <select id="urgency" name="urgency">
+                                <option value="low">Low &ndash; no rush</option>
+                                <option value="medium" selected>Medium &ndash; within a few days</option>
+                                <option value="high">High &ndash; needs attention today</option>
+                            </select>
+                        </p>
 
-                        <fieldset>
-                            <legend>Reason for contact</legend>
+                        <p class="field field-wide">
+                            <label for="subject">Subject:</label>
+                            <input type="text" id="subject" name="subject" maxlength="80" required>
+                            <span class="error-msg" id="error-subject"></span>
+                        </p>
 
-                            <p>
-                                <input type="radio" id="reason-records" name="reason" value="records" checked>
-                                <label for="reason-records">Academic records and certificates</label>
-                            </p>
-                            <p>
-                                <input type="radio" id="reason-enrollment" name="reason" value="enrollment">
-                                <label for="reason-enrollment">Enrollment and course registration</label>
-                            </p>
-                            <p>
-                                <input type="radio" id="reason-scholarship" name="reason" value="scholarship">
-                                <label for="reason-scholarship">Scholarships and financial aid</label>
-                            </p>
-                            <p>
-                                <input type="radio" id="reason-housing" name="reason" value="housing">
-                                <label for="reason-housing">Student housing</label>
-                            </p>
-                            <p>
-                                <input type="radio" id="reason-support" name="reason" value="support">
-                                <label for="reason-support">Technical support</label>
-                            </p>
-                            <p>
-                                <input type="radio" id="reason-other" name="reason" value="other">
-                                <label for="reason-other">Other</label>
-                            </p>
-                        </fieldset>
+                        <p class="field field-wide">
+                            <label for="message">Message:</label>
+                            <textarea id="message" name="message" rows="8"
+                                placeholder="Describe your request in detail..." required></textarea>
+                            <span class="error-msg" id="error-message"></span>
+                        </p>
 
-                        <fieldset>
-                            <legend>Your message</legend>
-
-                            <p>
-                                <label for="subject">Subject:</label>
-                                <input type="text" id="subject" name="subject" maxlength="80" required>
-                                <span class="error-msg" id="error-subject"></span>
-                            </p>
-
-                            <p>
-                                <label for="message">Message:</label>
-                                <br>
-                                <textarea id="message" name="message" rows="8" cols="50"
-                                    placeholder="Describe your request in detail..." required></textarea>
-                                <span class="error-msg" id="error-message"></span>
-                            </p>
-
-                            <p>
-                                <label for="attachment">Attach a document (optional):</label>
-                                <input type="file" id="attachment" name="attachment">
-                            </p>
-
-                            <p>
-                                <label for="urgency">Urgency:</label>
-                                <select id="urgency" name="urgency">
-                                    <option value="low">Low &ndash; no rush</option>
-                                    <option value="medium" selected>Medium &ndash; within a few days</option>
-                                    <option value="high">High &ndash; needs attention today</option>
-                                </select>
-                            </p>
-
-                            <p>
-                                <label for="preferred">Preferred answer date:</label>
-                                <input type="date" id="preferred" name="preferred">
-                            </p>
-                        </fieldset>
+                        <p class="field field-wide" data-show-for="scholarship support">
+                            <label for="attachment">Attach a document <span class="optional">(optional)</span></label>
+                            <input type="file" id="attachment" name="attachment">
+                        </p>
 
                     </div>
-                </div>
+                </fieldset>
 
+                <!-- ---------- panel 3: confirmation ---------- -->
                 <fieldset>
                     <legend>Confirmation</legend>
 
-                    <p>
+                    <p class="choice">
                         <input type="checkbox" id="accept" name="accept" value="yes" required>
                         <label for="accept">
                             I accept that the university may store and process the
@@ -256,7 +241,7 @@
                         <span class="error-msg" id="error-accept"></span>
                     </p>
 
-                    <p>
+                    <p class="choice">
                         <input type="checkbox" id="copy" name="copy" value="yes">
                         <label for="copy">
                             Send a copy of this message to my email address.
@@ -264,10 +249,10 @@
                     </p>
                 </fieldset>
 
-                <p class="form-actions">
-                    <button type="submit" class="btn btn-primary">Send request</button>
+                <div class="form-actions">
                     <button type="reset" class="btn">Clear form</button>
-                </p>
+                    <button type="submit" class="btn btn-primary">Send request</button>
+                </div>
 
             </form>
 

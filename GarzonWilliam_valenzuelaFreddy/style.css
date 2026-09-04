@@ -314,10 +314,23 @@ footer p {
    it is hidden with opacity + visibility, which also gives a fade.
    script.js only has to add/remove the class .is-open           */
 
+/* the navbar is sticky with z-index 100, so the modal has to go above
+   it. On top of that script.js slides the navbar away while a photo is
+   open: it moves with transform, so nothing in the page shifts */
+.navbar {
+    transition: transform .25s ease, opacity .25s ease;
+}
+
+.navbar.is-hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
 .modal {
     position: fixed;
     inset: 0;
-    z-index: 50;
+    z-index: 200;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -333,10 +346,11 @@ footer p {
     visibility: visible;
 }
 
+/* the box has no fixed width: it shrinks to the photo, so a portrait
+   picture does not leave white bars on both sides */
 .modal-box {
     position: relative;
     max-width: 900px;
-    width: 100%;
     padding: 16px;
     background-color: var(--surface);
     border-radius: var(--radius);
@@ -345,9 +359,9 @@ footer p {
 
 .modal-box img {
     display: block;
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     max-height: 75vh;
-    object-fit: contain;
     border-radius: var(--radius);
 }
 
@@ -381,73 +395,126 @@ footer p {
 
 /* =====================================================================
    4. WILLIAM GARZON - contact form (CSS Grid + Flexbox)
+   Adaptive panel. Same visual language as the gallery: white cards
+   with a soft shadow over the grey page background.
    ===================================================================== */
 
 #contact {
-    background-color: var(--surface);
     border-top: 1px solid var(--line);
+}
+
+#contact h3 {
+    margin: 40px 0 16px;
+    font-size: 1.15rem;
 }
 
 #contact-form {
     display: flex;
     flex-direction: column;
     gap: 24px;
+    margin-top: 32px;
 }
 
-/* two columns of fieldsets side by side */
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-}
-
-.form-col {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-}
-
+/* ---------- the panels ---------- */
 fieldset {
-    padding: 16px 20px;
-    background-color: var(--bg);
-    border: 2px solid var(--line);
+    margin: 0;
+    padding: 24px;
+    background-color: var(--surface);
+    border: 1px solid var(--line);
     border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    /* contains the floated legend */
     display: flow-root;
-    /* <- contiene el float, si no se sale del borde inferior */
 }
 
+/* the legend is floated so it sits inside the card instead of on top
+   of the border, and it gets its own separator line */
 legend {
     float: left;
-    /* <- lo saca del hueco del borde */
     width: 100%;
-    /* <- ocupa toda la línea, nada se le pone al lado */
-    padding: 0;
-    margin-bottom: 12px;
-    font-weight: bold;
+    padding: 0 0 10px;
+    margin-bottom: 20px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--brand-dark);
+    border-bottom: 2px solid var(--brand-light);
+}
+
+legend + * {
+    clear: both;
+}
+
+/* ---------- the selector that drives the whole panel ---------- */
+.reason-field {
+    max-width: 460px;
+    margin: 0 0 20px;
+}
+
+.reason-field label {
+    font-size: .95rem;
+}
+
+.reason-field select {
+    padding: 12px 14px;
+    font-size: 1rem;
+    font-weight: 600;
     color: var(--brand-dark);
 }
 
-legend+* {
-    clear: both;
-    /* lo que viene después baja debajo del legend */
+/* ---------- the adaptive questions ---------- */
+
+/* script.js writes the explanation of the chosen reason here */
+.reason-hint {
+    margin: 0 0 24px;
+    padding: 12px 16px;
+    font-size: .92rem;
+    color: var(--brand-dark);
+    background-color: var(--brand-light);
+    border-radius: 6px;
 }
 
-fieldset p {
-    margin: 0 0 14px;
+.reason-hint:empty {
+    display: none;
 }
 
-/* labels of text fields on their own line; labels of radios and
-   checkboxes stay next to the control */
+.fields-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 24px;
+}
+
+/* script.js adds .is-swapping while it changes the questions, so they
+   fade out and back in instead of popping */
+.reason-hint,
+.fields-grid {
+    transition: opacity .18s ease;
+}
+
+.reason-hint.is-swapping,
+.fields-grid.is-swapping {
+    opacity: 0;
+}
+
+.field {
+    margin: 0 0 18px;
+}
+
+/* subject, message and the attachment take the whole width */
+.field-wide {
+    grid-column: 1 / -1;
+}
+
 label {
     display: block;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
+    font-size: .9rem;
     font-weight: 600;
+    color: var(--ink);
 }
 
-input[type="radio"]+label,
-input[type="checkbox"]+label {
-    display: inline;
-    font-weight: normal;
+.optional {
+    font-weight: 400;
+    color: var(--muted);
 }
 
 input[type="text"],
@@ -459,29 +526,110 @@ input[type="file"],
 select,
 textarea {
     width: 100%;
-    padding: 8px 10px;
+    padding: 10px 12px;
     font: inherit;
     color: var(--ink);
     background-color: var(--surface);
     border: 1px solid var(--line);
-    border-radius: var(--radius);
+    border-radius: 6px;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #9ca3af;
+}
+
+select {
+    cursor: pointer;
 }
 
 textarea {
     resize: vertical;
-    min-height: 140px;
+    min-height: 150px;
+}
+
+/* the native "Choose file" button looks foreign, dress it as a chip */
+input[type="file"] {
+    padding: 7px 10px;
+    cursor: pointer;
+}
+
+input[type="file"]::file-selector-button {
+    margin-right: 12px;
+    padding: 6px 14px;
+    font: inherit;
+    font-size: .9rem;
+    color: var(--brand-dark);
+    background-color: var(--brand-light);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color .2s;
+}
+
+input[type="file"]:hover::file-selector-button {
+    background-color: #a7f3e5;
+}
+
+/* hover and focus: the teal ring ties the form to the rest of the site */
+input:hover,
+select:hover,
+textarea:hover {
+    border-color: #9ca3af;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
-    outline: 2px solid var(--brand);
-    outline-offset: 1px;
     border-color: var(--brand);
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, .15);
 }
 
-/* --- validation states (point 4.III) ---
-   script.js adds .is-invalid to the field and writes the text
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 1px;
+}
+
+/* ---------- panel 3: the confirmation checkboxes ---------- */
+.choice {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 0 0 14px;
+}
+
+.choice:last-child {
+    margin-bottom: 0;
+}
+
+.choice input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin: 3px 0 0;
+    flex-shrink: 0;
+    accent-color: var(--brand);
+    cursor: pointer;
+}
+
+.choice label {
+    flex: 1;
+    margin: 0;
+    font-size: .95rem;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+/* an error under a checkbox always starts on its own line */
+.choice .error-msg {
+    flex: 1 0 100%;
+}
+
+/* ---------- validation states (point 4.III) ---------- */
+/* script.js adds .is-invalid to the field and writes the text
    inside its <span class="error-msg"> */
 
 .is-invalid {
@@ -489,23 +637,68 @@ textarea:focus {
     background-color: #fef2f2;
 }
 
+.is-invalid:focus {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 3px rgba(185, 28, 28, .15);
+}
+
 .error-msg {
     display: block;
-    min-height: 1em;
-    margin-top: 4px;
+    margin-top: 6px;
     font-size: .85rem;
     font-weight: 600;
     color: var(--danger);
 }
 
-.form-actions {
-    display: flex;
-    gap: 12px;
+/* no empty message, no wasted space under every single field */
+.error-msg:empty {
+    display: none;
 }
 
+/* ---------- buttons ---------- */
+.form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0;
+}
+
+.form-actions .btn {
+    padding: 12px 28px;
+    font-weight: 600;
+}
+
+/* ---------- other ways to reach the university ---------- */
 .contact-list {
-    padding-left: 20px;
-    color: var(--muted);
+    margin: 0;
+    padding: 20px 20px 20px 40px;
+    background-color: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.contact-list li + li {
+    margin-top: 8px;
+}
+
+/* ---------- the form on smaller screens ---------- */
+@media (max-width: 900px) {
+    .fields-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    fieldset {
+        padding: 20px 16px;
+    }
+
+    /* the main action first when the buttons stack */
+    .form-actions {
+        flex-direction: column-reverse;
+    }
 }
 
 
@@ -514,14 +707,11 @@ textarea:focus {
    5. RESPONSIVENESS - media queries (point 3.IV)
    ===================================================================== */
 
-/* tablets: gallery in two columns, form in one column */
+/* tablets: gallery in two columns
+   (the form has its own media queries at the end of section 4) */
 @media (max-width: 900px) {
     .gallery-grid {
         grid-template-columns: repeat(2, 1fr);
-    }
-
-    .form-grid {
-        grid-template-columns: 1fr;
     }
 }
 
@@ -538,10 +728,6 @@ textarea:focus {
 
     .gallery-img {
         height: 200px;
-    }
-
-    .form-actions {
-        flex-direction: column;
     }
 
     .modal {
