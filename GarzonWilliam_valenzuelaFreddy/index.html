@@ -101,48 +101,56 @@
         <!-- ==============================================================
              PART 4 - William Garzon
              Contact form (name, email, message + submit button).
-             It is an adaptive panel: the reason chosen at the top decides
-             which questions are shown. Every field that only applies to
-             some reasons carries data-show-for="reason1 reason2", and
-             script.js shows or hides it. Hidden fields are disabled, so
-             they are neither validated nor submitted.
+
+             It is an adaptive panel about the campus, not a generic
+             university form: the request chosen at the top decides which
+             questions appear. A field that only applies to some requests
+             carries data-show-for="request1 request2"; script.js shows it
+             and hides the rest. A hidden field is also disabled, so it is
+             neither validated nor submitted.
+
+             The list of places is the same six buildings of the gallery
+             above, so both sections talk about the same campus.
+
              The form uses novalidate on purpose: the browser must NOT
              block the submit event, otherwise the jQuery validation of
              point 4.III would never run. The required attributes are
              kept as documentation and as a fallback.
              ============================================================== -->
         <section id="contact" class="section">
-            <h2>Contact the university</h2>
+            <h2>Contact the campus office</h2>
             <p class="section-intro">
-                Tell us what you need and the form will ask only for the data
-                that desk requires.
+                Everything here is about the campus itself: the map, its
+                buildings and the spaces you can use. Pick what you need and
+                the form will ask only for the data that request requires.
             </p>
 
             <form id="contact-form" action="#" method="post" novalidate>
 
-                <!-- ---------- the request panel ----------
-                     the <select> at the top decides which questions are
-                     shown below: script.js reads it and hides the rest -->
                 <fieldset>
                     <legend>Your request</legend>
 
                     <p class="reason-field">
                         <label for="reason">What do you need?</label>
                         <select id="reason" name="reason">
-                            <option value="records">Academic records and certificates</option>
-                            <option value="enrollment">Enrollment and course registration</option>
-                            <option value="scholarship">Scholarships and financial aid</option>
-                            <option value="housing">Student housing</option>
-                            <option value="support">Technical support</option>
+                            <option value="map">Report something wrong on the map</option>
+                            <option value="tour">Book a guided campus tour</option>
+                            <option value="booking">Reserve a space on campus</option>
+                            <option value="incident">Report a maintenance issue</option>
+                            <option value="photo">Send a photo for the gallery</option>
+                            <option value="building">Ask about a building</option>
+                            <option value="route">Request an accessible route</option>
+                            <option value="lost">Lost and found</option>
                             <option value="other">Something else</option>
                         </select>
                     </p>
 
-                    <!-- script.js writes here the explanation of the chosen reason -->
+                    <!-- script.js writes here the explanation of the request -->
                     <p class="reason-hint" id="reason-hint"></p>
 
                     <div class="fields-grid">
 
+                        <!-- ---------- asked for every request ---------- -->
                         <p class="field">
                             <label for="fullname">Full name:</label>
                             <input type="text" id="fullname" name="fullname" placeholder="First and last name"
@@ -156,84 +164,351 @@
                             <span class="error-msg" id="error-email"></span>
                         </p>
 
-                        <p class="field">
+                        <!-- only where somebody may need to call back -->
+                        <p class="field" data-show-for="tour booking lost">
                             <label for="phone">Phone number <span class="optional">(optional)</span></label>
                             <input type="tel" id="phone" name="phone" placeholder="099 999 9999">
                             <span class="error-msg" id="error-phone"></span>
                         </p>
 
-                        <p class="field" data-show-for="scholarship housing">
-                            <label for="birthdate">Date of birth:</label>
-                            <input type="date" id="birthdate" name="birthdate" required>
-                            <span class="error-msg" id="error-birthdate"></span>
-                        </p>
-
-                        <p class="field" data-show-for="records scholarship housing">
-                            <label for="idnumber">National ID number:</label>
-                            <input type="text" id="idnumber" name="idnumber" maxlength="10" placeholder="1000000000"
-                                required>
-                            <span class="error-msg" id="error-idnumber"></span>
-                        </p>
-
-                        <p class="field" data-show-for="records enrollment scholarship">
-                            <label for="program">Degree program:</label>
-                            <select id="program" name="program" required>
-                                <option value="">-- Select a program --</option>
-                                <option value="it">Information Technology</option>
-                                <option value="math">Mathematics</option>
-                                <option value="physics">Physics</option>
-                                <option value="biology">Biology</option>
-                                <option value="chemistry">Chemistry</option>
-                                <option value="geology">Geology</option>
-                                <option value="nano">Nanotechnology</option>
-                                <option value="agro">Agricultural Sciences</option>
+                        <!-- the six places of the gallery. script.js rewrites
+                             this label for each request -->
+                        <p class="field" data-show-for="map incident photo building lost">
+                            <label for="place">Place on campus:</label>
+                            <select id="place" name="place" required>
+                                <option value="">-- Select a place --</option>
+                                <option value="senecyt">Senecyt building</option>
+                                <option value="aulas-b">Aulas B</option>
+                                <option value="sala-capitular">Sala Capitular</option>
+                                <option value="bloques">Residences &ndash; Bloques</option>
+                                <option value="multifamiliares">Residences &ndash; Multifamiliares</option>
+                                <option value="patrimoniales">Residences &ndash; Patrimoniales</option>
+                                <option value="elsewhere">Another place on campus</option>
                             </select>
-                            <span class="error-msg" id="error-program"></span>
+                            <span class="error-msg" id="error-place"></span>
                         </p>
 
-                        <p class="field" data-show-for="records enrollment scholarship">
-                            <label for="semester">Semester:</label>
-                            <input type="number" id="semester" name="semester" min="1" max="10" step="1" required>
-                            <span class="error-msg" id="error-semester"></span>
-                        </p>
-
-                        <p class="field" data-show-for="enrollment housing">
-                            <label for="preferred">Date you need an answer by:</label>
-                            <input type="date" id="preferred" name="preferred">
-                            <span class="error-msg" id="error-preferred"></span>
-                        </p>
-
-                        <p class="field">
-                            <label for="urgency">Urgency:</label>
-                            <select id="urgency" name="urgency">
-                                <option value="low">Low &ndash; no rush</option>
-                                <option value="medium" selected>Medium &ndash; within a few days</option>
-                                <option value="high">High &ndash; needs attention today</option>
+                        <!-- ---------- A. something wrong on the map ---------- -->
+                        <p class="field" data-show-for="map">
+                            <label for="map-issue">What is wrong?</label>
+                            <select id="map-issue" name="map-issue" required>
+                                <option value="">-- Select the problem --</option>
+                                <option value="name">The name is wrong</option>
+                                <option value="position">The pin is in the wrong position</option>
+                                <option value="gone">The place no longer exists</option>
+                                <option value="missing">The place is missing from the map</option>
+                                <option value="photo">The photo does not match the place</option>
                             </select>
+                            <span class="error-msg" id="error-map-issue"></span>
                         </p>
 
-                        <p class="field field-wide">
+                        <p class="field field-wide" data-show-for="map">
+                            <label for="map-fix">What should the map say instead?</label>
+                            <input type="text" id="map-fix" name="map-fix" maxlength="120"
+                                placeholder="Correct name, or where the pin should be" required>
+                            <span class="error-msg" id="error-map-fix"></span>
+                        </p>
+
+                        <!-- ---------- B. guided campus tour ---------- -->
+                        <p class="field" data-show-for="tour">
+                            <label for="visit-date">Date of the visit:</label>
+                            <input type="date" id="visit-date" name="visit-date" required>
+                            <span class="error-msg" id="error-visit-date"></span>
+                        </p>
+
+                        <p class="field" data-show-for="tour">
+                            <label for="visit-time">Time slot:</label>
+                            <select id="visit-time" name="visit-time" required>
+                                <option value="">-- Select a slot --</option>
+                                <option value="morning">Morning &ndash; 09:00 to 12:00</option>
+                                <option value="afternoon">Afternoon &ndash; 14:00 to 17:00</option>
+                            </select>
+                            <span class="error-msg" id="error-visit-time"></span>
+                        </p>
+
+                        <p class="field" data-show-for="tour">
+                            <label for="group-size">How many people?</label>
+                            <input type="number" id="group-size" name="group-size" min="1" max="40" step="1"
+                                placeholder="1 to 40" required>
+                            <span class="error-msg" id="error-group-size"></span>
+                        </p>
+
+                        <p class="field" data-show-for="tour">
+                            <label for="group-type">Type of group:</label>
+                            <select id="group-type" name="group-type" required>
+                                <option value="">-- Select a group --</option>
+                                <option value="school">School group</option>
+                                <option value="applicant">Prospective students</option>
+                                <option value="family">Family or friends</option>
+                                <option value="company">Company or institution</option>
+                            </select>
+                            <span class="error-msg" id="error-group-type"></span>
+                        </p>
+
+                        <div class="field field-wide" data-show-for="tour">
+                            <span class="field-label" id="stops-label">Places you want to include:</span>
+                            <div class="check-row" id="tour-stops" tabindex="-1" role="group"
+                                aria-labelledby="stops-label">
+                                <label class="check">
+                                    <input type="checkbox" name="stops" value="sala-capitular"> Sala Capitular
+                                </label>
+                                <label class="check">
+                                    <input type="checkbox" name="stops" value="labs"> Laboratories
+                                </label>
+                                <label class="check">
+                                    <input type="checkbox" name="stops" value="residences"> Residences
+                                </label>
+                                <label class="check">
+                                    <input type="checkbox" name="stops" value="sports"> Sports field
+                                </label>
+                            </div>
+                            <span class="error-msg" id="error-tour-stops"></span>
+                        </div>
+
+                        <p class="field field-wide choice" data-show-for="tour">
+                            <input type="checkbox" id="transport" name="transport" value="yes">
+                            <label for="transport">We need transport from Ibarra to the campus.</label>
+                        </p>
+
+                        <!-- ---------- C. reserve a space ---------- -->
+                        <p class="field" data-show-for="booking">
+                            <label for="space-type">Which space?</label>
+                            <select id="space-type" name="space-type" required>
+                                <option value="">-- Select a space --</option>
+                                <option value="auditorium">Auditorium</option>
+                                <option value="classroom">Classroom</option>
+                                <option value="sports">Sports field</option>
+                                <option value="study">Study room</option>
+                            </select>
+                            <span class="error-msg" id="error-space-type"></span>
+                        </p>
+
+                        <p class="field" data-show-for="booking">
+                            <label for="booking-date">Date:</label>
+                            <input type="date" id="booking-date" name="booking-date" required>
+                            <span class="error-msg" id="error-booking-date"></span>
+                        </p>
+
+                        <p class="field" data-show-for="booking">
+                            <label for="start-time">From:</label>
+                            <input type="time" id="start-time" name="start-time" required>
+                            <span class="error-msg" id="error-start-time"></span>
+                        </p>
+
+                        <p class="field" data-show-for="booking">
+                            <label for="end-time">Until:</label>
+                            <input type="time" id="end-time" name="end-time" required>
+                            <span class="error-msg" id="error-end-time"></span>
+                        </p>
+
+                        <p class="field" data-show-for="booking">
+                            <label for="attendees">People attending:</label>
+                            <input type="number" id="attendees" name="attendees" min="1" max="500" step="1" required>
+                            <span class="error-msg" id="error-attendees"></span>
+                        </p>
+
+                        <div class="field" data-show-for="booking">
+                            <span class="field-label" id="event-label">Type of event:</span>
+                            <div class="check-row" role="radiogroup" aria-labelledby="event-label">
+                                <label class="check">
+                                    <input type="radio" name="event-type" value="academic" checked> Academic
+                                </label>
+                                <label class="check">
+                                    <input type="radio" name="event-type" value="external"> External
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="field field-wide" data-show-for="booking">
+                            <span class="field-label" id="equipment-label">Equipment you need
+                                <span class="optional">(optional)</span></span>
+                            <div class="check-row" role="group" aria-labelledby="equipment-label">
+                                <label class="check">
+                                    <input type="checkbox" name="equipment" value="projector"> Projector
+                                </label>
+                                <label class="check">
+                                    <input type="checkbox" name="equipment" value="sound"> Sound system
+                                </label>
+                                <label class="check">
+                                    <input type="checkbox" name="equipment" value="chairs"> Extra chairs
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- ---------- D. maintenance issue ---------- -->
+                        <p class="field" data-show-for="incident">
+                            <label for="floor-room">Floor or room number:</label>
+                            <input type="text" id="floor-room" name="floor-room" maxlength="30"
+                                placeholder="2nd floor, room 204" required>
+                            <span class="error-msg" id="error-floor-room"></span>
+                        </p>
+
+                        <p class="field" data-show-for="incident">
+                            <label for="issue-type">Type of issue:</label>
+                            <select id="issue-type" name="issue-type" required>
+                                <option value="">-- Select the issue --</option>
+                                <option value="lighting">Lighting</option>
+                                <option value="water">Water or plumbing</option>
+                                <option value="electrical">Electrical</option>
+                                <option value="furniture">Furniture</option>
+                                <option value="cleaning">Cleaning</option>
+                                <option value="internet">Internet or network</option>
+                            </select>
+                            <span class="error-msg" id="error-issue-type"></span>
+                        </p>
+
+                        <p class="field" data-show-for="incident">
+                            <label for="noticed-date">When did you notice it?</label>
+                            <input type="date" id="noticed-date" name="noticed-date" required>
+                            <span class="error-msg" id="error-noticed-date"></span>
+                        </p>
+
+                        <div class="field" data-show-for="incident">
+                            <span class="field-label" id="severity-label">How urgent is it?</span>
+                            <div class="check-row" role="radiogroup" aria-labelledby="severity-label">
+                                <label class="check">
+                                    <input type="radio" name="severity" value="low" checked> It can wait
+                                </label>
+                                <label class="check">
+                                    <input type="radio" name="severity" value="week"> This week
+                                </label>
+                                <label class="check">
+                                    <input type="radio" name="severity" value="danger"> It is dangerous now
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- ---------- E. a photo for the gallery ---------- -->
+                        <p class="field" data-show-for="photo">
+                            <label for="photo-date">When did you take it?</label>
+                            <input type="date" id="photo-date" name="photo-date" required>
+                            <span class="error-msg" id="error-photo-date"></span>
+                        </p>
+
+                        <p class="field" data-show-for="photo">
+                            <label for="photo-credit">Name for the credit <span class="optional">(optional)</span></label>
+                            <input type="text" id="photo-credit" name="photo-credit" maxlength="60"
+                                placeholder="How you want to be named under the photo">
+                        </p>
+
+                        <p class="field field-wide choice" data-show-for="photo">
+                            <input type="checkbox" id="photo-consent" name="photo-consent" value="yes" required>
+                            <label for="photo-consent">
+                                I took this photo and I authorise the university to publish it in the campus gallery.
+                            </label>
+                            <span class="error-msg" id="error-photo-consent"></span>
+                        </p>
+
+                        <!-- ---------- F. question about a building ---------- -->
+                        <p class="field" data-show-for="building">
+                            <label for="info-type">What do you want to know?</label>
+                            <select id="info-type" name="info-type" required>
+                                <option value="">-- Select a topic --</option>
+                                <option value="hours">Opening hours</option>
+                                <option value="directions">How to get there</option>
+                                <option value="contact">Who is in charge</option>
+                                <option value="accessibility">Accessibility of the building</option>
+                            </select>
+                            <span class="error-msg" id="error-info-type"></span>
+                        </p>
+
+                        <!-- ---------- G. accessible route ---------- -->
+                        <p class="field" data-show-for="route">
+                            <label for="route-from">From:</label>
+                            <select id="route-from" name="route-from" required>
+                                <option value="">-- Starting point --</option>
+                                <option value="senecyt">Senecyt building</option>
+                                <option value="aulas-b">Aulas B</option>
+                                <option value="sala-capitular">Sala Capitular</option>
+                                <option value="bloques">Residences &ndash; Bloques</option>
+                                <option value="multifamiliares">Residences &ndash; Multifamiliares</option>
+                                <option value="patrimoniales">Residences &ndash; Patrimoniales</option>
+                            </select>
+                            <span class="error-msg" id="error-route-from"></span>
+                        </p>
+
+                        <p class="field" data-show-for="route">
+                            <label for="route-to">To:</label>
+                            <select id="route-to" name="route-to" required>
+                                <option value="">-- Destination --</option>
+                                <option value="senecyt">Senecyt building</option>
+                                <option value="aulas-b">Aulas B</option>
+                                <option value="sala-capitular">Sala Capitular</option>
+                                <option value="bloques">Residences &ndash; Bloques</option>
+                                <option value="multifamiliares">Residences &ndash; Multifamiliares</option>
+                                <option value="patrimoniales">Residences &ndash; Patrimoniales</option>
+                            </select>
+                            <span class="error-msg" id="error-route-to"></span>
+                        </p>
+
+                        <p class="field" data-show-for="route">
+                            <label for="barrier">Barrier you found:</label>
+                            <select id="barrier" name="barrier" required>
+                                <option value="">-- Select the barrier --</option>
+                                <option value="stairs">Stairs with no ramp</option>
+                                <option value="lift">No lift in the building</option>
+                                <option value="narrow">The path is too narrow</option>
+                                <option value="surface">Broken or loose surface</option>
+                                <option value="signs">No signage</option>
+                            </select>
+                            <span class="error-msg" id="error-barrier"></span>
+                        </p>
+
+                        <p class="field field-wide choice" data-show-for="route">
+                            <input type="checkbox" id="mobility-support" name="mobility-support" value="yes">
+                            <label for="mobility-support">I use a wheelchair or need someone to help me on the
+                                way.</label>
+                        </p>
+
+                        <!-- ---------- H. lost and found ---------- -->
+                        <div class="field" data-show-for="lost">
+                            <span class="field-label" id="lost-label">What happened?</span>
+                            <div class="check-row" role="radiogroup" aria-labelledby="lost-label">
+                                <label class="check">
+                                    <input type="radio" name="lost-or-found" value="lost" checked> I lost something
+                                </label>
+                                <label class="check">
+                                    <input type="radio" name="lost-or-found" value="found"> I found something
+                                </label>
+                            </div>
+                        </div>
+
+                        <p class="field" data-show-for="lost">
+                            <label for="lost-date">On which day?</label>
+                            <input type="date" id="lost-date" name="lost-date" required>
+                            <span class="error-msg" id="error-lost-date"></span>
+                        </p>
+
+                        <p class="field field-wide" data-show-for="lost">
+                            <label for="object">Describe the object:</label>
+                            <input type="text" id="object" name="object" maxlength="120"
+                                placeholder="Black backpack with a blue water bottle" required>
+                            <span class="error-msg" id="error-object"></span>
+                        </p>
+
+                        <!-- ---------- anything else ---------- -->
+                        <p class="field field-wide" data-show-for="other">
                             <label for="subject">Subject:</label>
                             <input type="text" id="subject" name="subject" maxlength="80" required>
                             <span class="error-msg" id="error-subject"></span>
                         </p>
 
+                        <!-- ---------- asked for every request ---------- -->
                         <p class="field field-wide">
                             <label for="message">Message:</label>
-                            <textarea id="message" name="message" rows="8"
-                                placeholder="Describe your request in detail..." required></textarea>
+                            <textarea id="message" name="message" rows="8" required></textarea>
                             <span class="error-msg" id="error-message"></span>
                         </p>
 
-                        <p class="field field-wide" data-show-for="scholarship support">
-                            <label for="attachment">Attach a document <span class="optional">(optional)</span></label>
-                            <input type="file" id="attachment" name="attachment">
+                        <p class="field field-wide" data-show-for="map incident photo lost">
+                            <label for="attachment">Photo <span class="optional" id="attachment-note">(optional)</span></label>
+                            <input type="file" id="attachment" name="attachment" accept="image/*">
+                            <span class="error-msg" id="error-attachment"></span>
                         </p>
 
                     </div>
                 </fieldset>
 
-                <!-- ---------- panel 3: confirmation ---------- -->
                 <fieldset>
                     <legend>Confirmation</legend>
 

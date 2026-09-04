@@ -519,10 +519,62 @@ label {
     color: var(--muted);
 }
 
+/* a group of radios or checkboxes is not a single control, so it gets a
+   plain <span> as its title instead of a <label for> */
+.field-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: .9rem;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+/* the box that holds the options of one group */
+.check-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    padding: 12px 14px;
+    background-color: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+}
+
+.check-row:focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 1px;
+}
+
+/* script.js can mark a whole group as wrong, not only single inputs */
+.check-row.is-invalid {
+    border-color: var(--danger);
+    background-color: #fef2f2;
+}
+
+.check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: .95rem;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.check input {
+    width: 17px;
+    height: 17px;
+    margin: 0;
+    flex-shrink: 0;
+    accent-color: var(--brand);
+    cursor: pointer;
+}
+
 input[type="text"],
 input[type="email"],
 input[type="tel"],
 input[type="date"],
+input[type="time"],
 input[type="number"],
 input[type="file"],
 select,
@@ -570,8 +622,11 @@ input[type="file"]::file-selector-button {
     transition: background-color .2s;
 }
 
+/* solid brand colour on hover: it works in the light and the dark theme,
+   a fixed mint would break when --brand-light turns dark */
 input[type="file"]:hover::file-selector-button {
-    background-color: #a7f3e5;
+    color: #fff;
+    background-color: var(--brand);
 }
 
 /* hover and focus: the teal ring ties the form to the rest of the site */
@@ -655,6 +710,11 @@ textarea:focus-visible {
 /* no empty message, no wasted space under every single field */
 .error-msg:empty {
     display: none;
+}
+
+/* the dark red of the light theme is hard to read on the dark one */
+body.dark .error-msg {
+    color: #f87171;
 }
 
 /* ---------- buttons ---------- */

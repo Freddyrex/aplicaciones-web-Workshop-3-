@@ -119,8 +119,8 @@ $(document).ready(function () {
        4.III - WILLIAM GARZON
        Adaptive panel + form validation.
 
-       Each question that only applies to some reasons carries
-       data-show-for="reason1 reason2" in the HTML. When the reason
+       Every question that only applies to some requests carries
+       data-show-for="request1 request2" in the HTML. When the request
        changes, the questions that do not apply are hidden AND disabled:
        a disabled field is not submitted and is not :visible, so the
        validation skips it on its own.
@@ -132,25 +132,117 @@ $(document).ready(function () {
 
     var $form = $('#contact-form');
 
-    // what each desk needs, written under the "Your request" title
-    var REASON_HINTS = {
-        records: 'Certificates are issued by the registrar office: we need your ID number, your program and your semester.',
-        enrollment: 'Course registration is handled by your school. Tell us your program, your semester and the date you need an answer by.',
-        scholarship: 'Financial aid needs your academic data and your ID number. Attach any supporting document you already have.',
-        housing: 'Student housing needs your ID number, your date of birth and the date you plan to move in.',
-        support: 'Describe the problem in detail and attach a screenshot if you can.',
-        other: 'Write your request and we will forward it to the right desk.'
+    /* ---------- the words of each request ----------
+       hint: the sentence under the title
+       labels: the questions that are worded differently per request
+       placeholder: the example inside the message box */
+
+    var REASONS = {
+
+        map: {
+            hint: 'Tell us what the map gets wrong and we will move or rename the pin. A photo of the place helps a lot.',
+            labels: {
+                place: 'Which place is wrong on the map?',
+                message: 'Explain the correction:'
+            },
+            placeholder: 'The entrance to Aulas B is on the north side, not where the map shows it...'
+        },
+
+        tour: {
+            hint: 'Guided tours run from Monday to Friday, in two slots. Tell us when you want to come and how many people you are.',
+            labels: {
+                message: 'Anything we should know about your group?'
+            },
+            placeholder: 'We are a school group and two of the students use a wheelchair...'
+        },
+
+        booking: {
+            hint: 'Spaces are booked by the campus office. Give us the date, the hours and how many people will attend.',
+            labels: {
+                message: 'What is the space for?'
+            },
+            placeholder: 'A talk about renewable energy, open to every student of the campus...'
+        },
+
+        incident: {
+            hint: 'Report something broken or unsafe inside a building. Say where it is as precisely as you can.',
+            labels: {
+                place: 'In which building?',
+                message: 'Describe the damage:'
+            },
+            placeholder: 'The light of the corridor has been flickering for a week and now it does not turn on...'
+        },
+
+        photo: {
+            hint: 'Send us a photo of the campus for the gallery. We only publish photos with the permission of whoever took them.',
+            labels: {
+                place: 'Which place does the photo show?',
+                message: 'Tell us about the photo:'
+            },
+            placeholder: 'Taken at sunrise from the sports field, with the fog still over the buildings...'
+        },
+
+        building: {
+            hint: 'Ask anything about a building of the campus: opening hours, how to get there or who is in charge of it.',
+            labels: {
+                place: 'Which building do you want to know about?',
+                message: 'Your question:'
+            },
+            placeholder: 'Is the library open on Saturdays during the exam weeks?'
+        },
+
+        route: {
+            hint: 'Tell us the two points and the barrier you found. We answer with an accessible route and pass the report to the campus office.',
+            labels: {
+                message: 'Describe the barrier:'
+            },
+            placeholder: 'The only way from the residences to Aulas B is a staircase with no ramp next to it...'
+        },
+
+        lost: {
+            hint: 'Lost something on campus, or found something that is not yours? Describe it and we will match both reports.',
+            labels: {
+                place: 'Where did it happen?',
+                message: 'Anything else that helps to identify it?'
+            },
+            placeholder: 'It has a physics book inside and a sticker of the university on the front pocket...'
+        },
+
+        other: {
+            hint: 'Write your request and we will forward it to the right desk of the campus.',
+            labels: {
+                message: 'Your message:'
+            },
+            placeholder: 'Describe your request in detail...'
+        }
+    };
+
+    // the wording used when the chosen request does not change it
+    var DEFAULT_LABELS = {
+        place: 'Place on campus:',
+        message: 'Message:'
     };
 
     function currentReason() {
         return $('#reason').val();
     }
 
-    // shows the questions of the chosen reason and hides the rest
+    // shows the questions of the chosen request and hides the rest
     function applyReason() {
         var reason = currentReason();
+        var config = REASONS[reason] || {};
+        var labels = config.labels || {};
 
-        $('#reason-hint').text(REASON_HINTS[reason] || '');
+        $('#reason-hint').text(config.hint || '');
+        $('#message').attr('placeholder', config.placeholder || '');
+
+        // the same box is asked with different words in each request
+        $.each(DEFAULT_LABELS, function (id, fallback) {
+            $('label[for="' + id + '"]').text(labels[id] || fallback);
+        });
+
+        // the photo is the whole point of the gallery request
+        $('#attachment-note').text(reason === 'photo' ? '(required)' : '(optional)');
 
         $('[data-show-for]').each(function () {
             var $field = $(this);
@@ -169,36 +261,39 @@ $(document).ready(function () {
     }
 
     // the same thing, but with a short cross fade so the questions do
-    // not pop in and out when the student changes the reason.
+    // not pop in and out when the student changes the request.
     // The fade is a CSS transition on .is-swapping (see style.css):
     // even if it does not run, the questions always end up visible.
     var swapTimer = null;
 
     function updatePanel() {
-        var $body = $('#reason-hint, .fields-grid');
+        var $panel = $('#reason-hint, .fields-grid');
 
-        $body.addClass('is-swapping');
+        $panel.addClass('is-swapping');
         clearTimeout(swapTimer);
 
         swapTimer = setTimeout(function () {
             applyReason();
-            $body.removeClass('is-swapping');
+            $panel.removeClass('is-swapping');
         }, 160);
     }
 
     $('#reason').on('change', updatePanel);
 
 
-    /* ---------- the rules, one function per field ----------
-       each one returns the error message, or null if the field is fine */
+    /* ---------- small helpers ---------- */
 
     var EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     var NAME_PATTERN = /^[A-Za-zÁÉÍÓÚÑáéíóúñ' -]+$/;
     var DIGITS_PATTERN = /^[0-9]+$/;
 
+    function value(id) {
+        return $.trim($('#' + id).val());
+    }
+
     // a date input gives "2026-09-04": read it as a local date
-    function toDate(value) {
-        return new Date(value + 'T00:00');
+    function toDate(text) {
+        return new Date(text + 'T00:00');
     }
 
     function today() {
@@ -207,30 +302,53 @@ $(document).ready(function () {
         return date;
     }
 
+    function isChecked(id) {
+        return $('#' + id).is(':checked');
+    }
+
+    // a whole number inside a range
+    function checkNumber(id, min, max, empty, range) {
+        var text = value(id);
+
+        if (text === '') {
+            return empty;
+        }
+        if (Number(text) < min || Number(text) > max) {
+            return range;
+        }
+        return null;
+    }
+
+
+    /* ---------- the rules, one function per field ----------
+       each one returns the error message, or null if the field is fine */
+
     var VALIDATORS = {
 
-        fullname: function () {
-            var value = $.trim($('#fullname').val());
+        /* --- asked in every request --- */
 
-            if (value === '') {
+        fullname: function () {
+            var text = value('fullname');
+
+            if (text === '') {
                 return 'Please write your full name.';
             }
-            if (value.length < 3) {
+            if (text.length < 3) {
                 return 'The name must have at least 3 characters.';
             }
-            if (!NAME_PATTERN.test(value)) {
+            if (!NAME_PATTERN.test(text)) {
                 return 'The name cannot contain numbers or symbols.';
             }
             return null;
         },
 
         email: function () {
-            var value = $.trim($('#email').val());
+            var text = value('email');
 
-            if (value === '') {
+            if (text === '') {
                 return 'Please write your email address.';
             }
-            if (!EMAIL_PATTERN.test(value)) {
+            if (!EMAIL_PATTERN.test(text)) {
                 return 'Write a valid address, for example name@yachaytech.edu.ec';
             }
             return null;
@@ -238,106 +356,276 @@ $(document).ready(function () {
 
         // optional: only checked when the student writes something
         phone: function () {
-            var value = $.trim($('#phone').val()).replace(/[\s-]/g, '');
+            var text = value('phone').replace(/[\s-]/g, '');
 
-            if (value === '') {
+            if (text === '') {
                 return null;
             }
-            if (!DIGITS_PATTERN.test(value) || value.length < 7 || value.length > 15) {
+            if (!DIGITS_PATTERN.test(text) || text.length < 7 || text.length > 15) {
                 return 'Write a valid phone number (7 to 15 digits).';
             }
             return null;
         },
 
-        birthdate: function () {
-            var value = $('#birthdate').val();
-
-            if (value === '') {
-                return 'Please choose your date of birth.';
-            }
-            if (toDate(value) >= today()) {
-                return 'The date of birth must be in the past.';
-            }
-            return null;
-        },
-
-        idnumber: function () {
-            var value = $.trim($('#idnumber').val());
-
-            if (value === '') {
-                return 'This request needs your ID number.';
-            }
-            if (!DIGITS_PATTERN.test(value) || value.length !== 10) {
-                return 'The ID number must have exactly 10 digits.';
-            }
-            return null;
-        },
-
-        program: function () {
-            return $('#program').val() === '' ? 'Choose your degree program.' : null;
-        },
-
-        semester: function () {
-            var value = $('#semester').val();
-
-            if (value === '') {
-                return 'Write your current semester.';
-            }
-            if (Number(value) < 1 || Number(value) > 10) {
-                return 'The semester must be a number between 1 and 10.';
-            }
-            return null;
-        },
-
-        // optional: only checked when the student picks a date
-        preferred: function () {
-            var value = $('#preferred').val();
-
-            if (value === '') {
-                return null;
-            }
-            if (toDate(value) < today()) {
-                return 'The date has to be today or later.';
-            }
-            return null;
-        },
-
-        subject: function () {
-            var value = $.trim($('#subject').val());
-
-            if (value === '') {
-                return 'Please write a subject.';
-            }
-            if (value.length < 3) {
-                return 'The subject is too short.';
-            }
-            return null;
+        place: function () {
+            return value('place') === '' ? 'Choose a place on campus.' : null;
         },
 
         message: function () {
-            var value = $.trim($('#message').val());
+            var text = value('message');
 
-            if (value === '') {
+            if (text === '') {
                 return 'Please write your message.';
             }
-            if (value.length < 10) {
+            if (text.length < 10) {
                 return 'The message must have at least 10 characters.';
             }
             return null;
         },
 
+        // a photo is optional everywhere, except when the request IS
+        // sending a photo for the gallery
+        attachment: function () {
+            if (currentReason() !== 'photo') {
+                return null;
+            }
+            return $('#attachment').val() === '' ? 'Choose the photo you want to send.' : null;
+        },
+
         accept: function () {
-            return $('#accept').is(':checked')
+            return isChecked('accept')
                 ? null
                 : 'You have to accept the processing of your data.';
+        },
+
+        /* --- A. something wrong on the map --- */
+
+        'map-issue': function () {
+            return value('map-issue') === '' ? 'Tell us what is wrong with it.' : null;
+        },
+
+        'map-fix': function () {
+            var text = value('map-fix');
+
+            if (text === '') {
+                return 'Write what the map should say instead.';
+            }
+            if (text.length < 3) {
+                return 'That is too short to be a correction.';
+            }
+            return null;
+        },
+
+        /* --- B. guided campus tour --- */
+
+        'visit-date': function () {
+            var text = value('visit-date');
+
+            if (text === '') {
+                return 'Choose the date of the visit.';
+            }
+
+            var date = toDate(text);
+            var day = date.getDay();
+
+            if (date <= today()) {
+                return 'Choose a date after today.';
+            }
+            if (day === 0 || day === 6) {
+                return 'Guided tours only run from Monday to Friday.';
+            }
+            return null;
+        },
+
+        'visit-time': function () {
+            return value('visit-time') === '' ? 'Choose a time slot.' : null;
+        },
+
+        'group-size': function () {
+            return checkNumber('group-size', 1, 40,
+                'Say how many people are coming.',
+                'A guided tour takes between 1 and 40 people.');
+        },
+
+        'group-type': function () {
+            return value('group-type') === '' ? 'Tell us what kind of group you are.' : null;
+        },
+
+        // a group of checkboxes: the id is on the box that holds them
+        'tour-stops': function () {
+            return $('input[name="stops"]:checked').length === 0
+                ? 'Choose at least one place for the tour.'
+                : null;
+        },
+
+        /* --- C. reserve a space --- */
+
+        'space-type': function () {
+            return value('space-type') === '' ? 'Choose the space you need.' : null;
+        },
+
+        'booking-date': function () {
+            var text = value('booking-date');
+
+            if (text === '') {
+                return 'Choose the date of the booking.';
+            }
+            if (toDate(text) < today()) {
+                return 'The date cannot be in the past.';
+            }
+            return null;
+        },
+
+        'start-time': function () {
+            return value('start-time') === '' ? 'Say at what time it starts.' : null;
+        },
+
+        'end-time': function () {
+            var end = value('end-time');
+            var start = value('start-time');
+
+            if (end === '') {
+                return 'Say until what time.';
+            }
+            // "HH:MM" in 24 hour format compares correctly as text
+            if (start !== '' && end <= start) {
+                return 'The end has to be later than the start.';
+            }
+            return null;
+        },
+
+        attendees: function () {
+            return checkNumber('attendees', 1, 500,
+                'Say how many people will attend.',
+                'Write a number between 1 and 500.');
+        },
+
+        /* --- D. maintenance issue --- */
+
+        'floor-room': function () {
+            return value('floor-room') === ''
+                ? 'Say the floor or the room number.'
+                : null;
+        },
+
+        'issue-type': function () {
+            return value('issue-type') === '' ? 'Choose the type of issue.' : null;
+        },
+
+        'noticed-date': function () {
+            var text = value('noticed-date');
+
+            if (text === '') {
+                return 'Say when you noticed it.';
+            }
+            if (toDate(text) > today()) {
+                return 'You cannot notice something in the future.';
+            }
+            return null;
+        },
+
+        /* --- E. a photo for the gallery --- */
+
+        'photo-date': function () {
+            var text = value('photo-date');
+
+            if (text === '') {
+                return 'Say when you took the photo.';
+            }
+            if (toDate(text) > today()) {
+                return 'The date cannot be in the future.';
+            }
+            return null;
+        },
+
+        'photo-consent': function () {
+            return isChecked('photo-consent')
+                ? null
+                : 'We can only publish the photo with your permission.';
+        },
+
+        /* --- F. question about a building --- */
+
+        'info-type': function () {
+            return value('info-type') === '' ? 'Choose what you want to know.' : null;
+        },
+
+        /* --- G. accessible route --- */
+
+        'route-from': function () {
+            return value('route-from') === '' ? 'Choose the starting point.' : null;
+        },
+
+        'route-to': function () {
+            var to = value('route-to');
+
+            if (to === '') {
+                return 'Choose the destination.';
+            }
+            if (to === value('route-from')) {
+                return 'The destination has to be a different place.';
+            }
+            return null;
+        },
+
+        barrier: function () {
+            return value('barrier') === '' ? 'Tell us which barrier you found.' : null;
+        },
+
+        /* --- H. lost and found --- */
+
+        'lost-date': function () {
+            var text = value('lost-date');
+
+            if (text === '') {
+                return 'Say on which day it happened.';
+            }
+            if (toDate(text) > today()) {
+                return 'The date cannot be in the future.';
+            }
+            return null;
+        },
+
+        object: function () {
+            var text = value('object');
+
+            if (text === '') {
+                return 'Describe the object.';
+            }
+            if (text.length < 3) {
+                return 'That description is too short.';
+            }
+            return null;
+        },
+
+        /* --- anything else --- */
+
+        subject: function () {
+            var text = value('subject');
+
+            if (text === '') {
+                return 'Please write a subject.';
+            }
+            if (text.length < 3) {
+                return 'The subject is too short.';
+            }
+            return null;
         }
     };
 
-    // the order is the order in which the questions appear on screen,
-    // so the first error found is also the first one of the form
+    // in the same order as the questions on screen, so the first error
+    // found is also the first one the student sees
     var FIELDS = [
-        'fullname', 'email', 'phone', 'birthdate', 'idnumber',
-        'program', 'semester', 'preferred', 'subject', 'message', 'accept'
+        'fullname', 'email', 'phone', 'place',
+        'map-issue', 'map-fix',
+        'visit-date', 'visit-time', 'group-size', 'group-type', 'tour-stops',
+        'space-type', 'booking-date', 'start-time', 'end-time', 'attendees',
+        'floor-room', 'issue-type', 'noticed-date',
+        'photo-date', 'photo-consent',
+        'info-type',
+        'route-from', 'route-to', 'barrier',
+        'lost-date', 'object',
+        'subject', 'message', 'attachment', 'accept'
     ];
 
 
@@ -362,7 +650,7 @@ $(document).ready(function () {
         var errors = [];
 
         $.each(FIELDS, function (index, id) {
-            // hidden by the adaptive panel: this desk does not ask for it
+            // hidden by the panel: this request does not ask for it
             if (!$('#' + id).is(':visible')) {
                 return;
             }
@@ -404,15 +692,33 @@ $(document).ready(function () {
         applyReason();
     });
 
-    // while the user corrects a field, its error message disappears
+    // while the user corrects something, its error message disappears
     $form.on('input change', 'input, select, textarea', function () {
-        if ($(this).hasClass('is-invalid')) {
+        var $control = $(this);
+
+        if ($control.hasClass('is-invalid')) {
             clearError(this.id);
+        }
+
+        // a control inside a group: the error belongs to the whole group
+        var $group = $control.closest('.check-row.is-invalid');
+
+        if ($group.length) {
+            clearError($group.attr('id'));
         }
     });
 
+    // two errors depend on another field, so they go stale when it changes
+    $('#start-time').on('change', function () {
+        clearError('end-time');
+    });
+
+    $('#route-from').on('change', function () {
+        clearError('route-to');
+    });
+
     // the Clear form button also wipes the errors and goes back to the
-    // questions of the default reason (reset() runs after this event)
+    // questions of the first request (reset() runs after this event)
     $form.on('reset', function () {
         setTimeout(function () {
             clearAllErrors();
