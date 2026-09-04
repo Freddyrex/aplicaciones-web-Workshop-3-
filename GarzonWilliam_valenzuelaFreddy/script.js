@@ -29,6 +29,23 @@ $(document).ready(function () {
 
 
     /* =================================================================
+       Dark mode toggle (sun/moon button)
+       ================================================================= */
+
+    var $body = $('body');
+    var $toggle = $('#theme-toggle');
+
+    if (localStorage.getItem('theme') === 'dark') {
+        $body.addClass('dark');
+    }
+
+    $toggle.on('click', function () {
+        $body.toggleClass('dark');
+        localStorage.setItem('theme', $body.hasClass('dark') ? 'dark' : 'light');
+    });
+
+
+    /* =================================================================
        4.II - WILLIAM GARZON
        Image gallery: clicking on a photo enlarges it in a popup modal.
        The modal is shown by adding the class .is-open (see style.css);
