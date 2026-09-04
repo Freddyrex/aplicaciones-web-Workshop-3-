@@ -1,1 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagina Web </title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- jQuery 3.7.1 (latest release) - required by point 1.II -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+
+<body>
+
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <!-- ==================================================================
+         PART 1 + 2 - Freddy Valenzuela
+         1) Navigation bar with at least three links
+         2) Hero section: heading + short description + button
+            (the button needs id="hero-btn" so the jQuery random
+             background colour effect can hook into it)
+         Write your code between these two markers.
+         ================================================================== -->
+
+    <!-- TODO Freddy: <header class="navbar"> ... </header> -->
+    <!-- TODO Freddy: <section id="hero"> ... <button id="hero-btn">...</button> </section> -->
+
+    <!-- ===================== END OF FREDDY'S ZONE ====================== -->
+
+
+    <main id="main">
+
+        <!-- ==============================================================
+             PART 3 - William Garzon
+             Image gallery with at least four images.
+             Each <img> carries data-caption so the jQuery modal
+             (point 4.II) can show the caption of the enlarged photo.
+             NOTE: the photos are placeholders. To use real campus
+             photos, put them in an /img folder and replace both the
+             src and the alt text of each image.
+             ============================================================== -->
+        <section id="gallery" class="section">
+            <h2>Campus gallery</h2>
+            <p class="section-intro">Click on any photo to enlarge it.</p>
+
+            <div class="gallery-grid">
+
+                <figure class="gallery-item">
+                    <img class="gallery-img" src="assets/senecyt.webp"
+                        alt="Building Principal of Yachay Tech University" data-caption="Senecyt">
+                    <figcaption>Senecyt</figcaption>
+                </figure>
+
+                <figure class="gallery-item">
+                    <img class="gallery-img" src="assets/Biblioteca_Universidad_Yachay_Tech_3.jpg"
+                        alt="Aulas B" data-caption="Aulas B">
+                    <figcaption>Aulas B</figcaption>
+                </figure>
+
+                <figure class="gallery-item">
+                    <img class="gallery-img" src="assets/sala-capitular-nueva.jpg"
+                        alt="Sala Capitular" data-caption="Sala Capitular">
+                    <figcaption>Sala Capitular</figcaption>
+                </figure>
+
+                <figure class="gallery-item">
+                    <img class="gallery-img" src="assets/Residencias_Departamentos_Bloques_Universidad_Yachay_Tech-1536x1024.jpg"
+                        alt="Bloques de residencias" data-caption="Bloques">
+                    <figcaption>Bloques</figcaption>
+                </figure>
+
+                <figure class="gallery-item">
+                    <img class="gallery-img" src="assets/Residencias_Departamentos_Multifamiliares_Universidad_Yachay_Tech-2048x1365.jpg"
+                        alt="Multifamiliares" data-caption="Multifamiliares">
+                    <figcaption>Multifamiliares</figcaption>
+                </figure>
+
+                <figure class="gallery-item">
+                    <img class="gallery-img" src="assets/Residencias_Universidad_Yachay_Tech_8.jpg"
+                        alt="Patrimoniales" data-caption="Patrimoniales">
+                    <figcaption>Patrimoniales</figcaption>
+                </figure>
+
+            </div>
+        </section>
+
+        <!-- Popup modal used by the gallery (point 4.II).
+             It starts hidden; script.js fills #modal-img and shows it. -->
+        <div id="image-modal" class="modal" role="dialog" aria-modal="true" aria-label="Enlarged image"
+            aria-hidden="true">
+            <div class="modal-box">
+                <button type="button" id="modal-close" class="modal-close" aria-label="Close image">&times;</button>
+                <img id="modal-img" src="" alt="">
+                <p id="modal-caption"></p>
+            </div>
+        </div>
+
+
+        <!-- ==============================================================
+             PART 4 - William Garzon
+             Contact form (name, email, message + submit button).
+             This is the Workshop 2 contact page, reused here as one
+             single <section> of the Workshop 3 single-page site.
+             The form uses novalidate on purpose: the browser must NOT
+             block the submit event, otherwise the jQuery validation of
+             point 4.III would never run. The required attributes are
+             kept as documentation and as a fallback.
+             ============================================================== -->
+        <section id="contact" class="section">
+            <h2>Contact the university</h2>
+            <p class="section-intro">
+                This form lets a student write to Yachay Tech University: to student
+                services, to the registrar office, or to the academic department in
+                charge of their programme. Fill in your academic details so that the
+                request reaches the right desk.
+            </p>
+
+            <form id="contact-form" action="#" method="post" novalidate>
+
+                <div class="form-grid">
+
+                    <div class="form-col">
+
+                        <fieldset>
+                            <legend>Personal information</legend>
+
+                            <p>
+                                <label for="fullname">Full name:</label>
+                                <input type="text" id="fullname" name="fullname" placeholder="First and last name"
+                                    required>
+                                <span class="error-msg" id="error-fullname"></span>
+                            </p>
+
+                            <p>
+                                <label for="email">Email address:</label>
+                                <input type="email" id="email" name="email" placeholder="name@yachaytech.edu.ec"
+                                    required>
+                                <span class="error-msg" id="error-email"></span>
+                            </p>
+
+                            <p>
+                                <label for="birthdate">Date of birth:</label>
+                                <input type="date" id="birthdate" name="birthdate" required>
+                                <span class="error-msg" id="error-birthdate"></span>
+                            </p>
+
+                            <p>
+                                <label for="idnumber">National ID number:</label>
+                                <input type="text" id="idnumber" name="idnumber" maxlength="10"
+                                    placeholder="1000000000">
+                            </p>
+
+                            <p>
+                                <label for="phone">Phone number (optional):</label>
+                                <input type="tel" id="phone" name="phone" placeholder="099 999 9999">
+                            </p>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Academic information</legend>
+
+                            <p>
+                                <label for="program">Degree program:</label>
+                                <select id="program" name="program" required>
+                                    <option value="">-- Select a program --</option>
+                                    <option value="it">Information Technology</option>
+                                    <option value="math">Mathematics</option>
+                                    <option value="physics">Physics</option>
+                                    <option value="biology">Biology</option>
+                                    <option value="chemistry">Chemistry</option>
+                                    <option value="geology">Geology</option>
+                                    <option value="nano">Nanotechnology</option>
+                                    <option value="agro">Agricultural Sciences</option>
+                                </select>
+                                <span class="error-msg" id="error-program"></span>
+                            </p>
+
+                            <p>
+                                <label for="semester">Semester:</label>
+                                <input type="number" id="semester" name="semester" min="1" max="10" step="1" required>
+                                <span class="error-msg" id="error-semester"></span>
+                            </p>
+                        </fieldset>
+
+                    </div>
+
+                    <div class="form-col">
+
+                        <fieldset>
+                            <legend>Reason for contact</legend>
+
+                            <p>
+                                <input type="radio" id="reason-records" name="reason" value="records" checked>
+                                <label for="reason-records">Academic records and certificates</label>
+                            </p>
+                            <p>
+                                <input type="radio" id="reason-enrollment" name="reason" value="enrollment">
+                                <label for="reason-enrollment">Enrollment and course registration</label>
+                            </p>
+                            <p>
+                                <input type="radio" id="reason-scholarship" name="reason" value="scholarship">
+                                <label for="reason-scholarship">Scholarships and financial aid</label>
+                            </p>
+                            <p>
+                                <input type="radio" id="reason-housing" name="reason" value="housing">
+                                <label for="reason-housing">Student housing</label>
+                            </p>
+                            <p>
+                                <input type="radio" id="reason-support" name="reason" value="support">
+                                <label for="reason-support">Technical support</label>
+                            </p>
+                            <p>
+                                <input type="radio" id="reason-other" name="reason" value="other">
+                                <label for="reason-other">Other</label>
+                            </p>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Your message</legend>
+
+                            <p>
+                                <label for="subject">Subject:</label>
+                                <input type="text" id="subject" name="subject" maxlength="80" required>
+                                <span class="error-msg" id="error-subject"></span>
+                            </p>
+
+                            <p>
+                                <label for="message">Message:</label>
+                                <br>
+                                <textarea id="message" name="message" rows="8" cols="50"
+                                    placeholder="Describe your request in detail..." required></textarea>
+                                <span class="error-msg" id="error-message"></span>
+                            </p>
+
+                            <p>
+                                <label for="attachment">Attach a document (optional):</label>
+                                <input type="file" id="attachment" name="attachment">
+                            </p>
+
+                            <p>
+                                <label for="urgency">Urgency:</label>
+                                <select id="urgency" name="urgency">
+                                    <option value="low">Low &ndash; no rush</option>
+                                    <option value="medium" selected>Medium &ndash; within a few days</option>
+                                    <option value="high">High &ndash; needs attention today</option>
+                                </select>
+                            </p>
+
+                            <p>
+                                <label for="preferred">Preferred answer date:</label>
+                                <input type="date" id="preferred" name="preferred">
+                            </p>
+                        </fieldset>
+
+                    </div>
+                </div>
+
+                <fieldset>
+                    <legend>Confirmation</legend>
+
+                    <p>
+                        <input type="checkbox" id="accept" name="accept" value="yes" required>
+                        <label for="accept">
+                            I accept that the university may store and process the
+                            information above in order to answer my request.
+                        </label>
+                        <span class="error-msg" id="error-accept"></span>
+                    </p>
+
+                    <p>
+                        <input type="checkbox" id="copy" name="copy" value="yes">
+                        <label for="copy">
+                            Send a copy of this message to my email address.
+                        </label>
+                    </p>
+                </fieldset>
+
+                <p class="form-actions">
+                    <button type="submit" class="btn btn-primary">Send request</button>
+                    <button type="reset" class="btn">Clear form</button>
+                </p>
+
+            </form>
+
+            <h3>Other ways to reach the university</h3>
+            <ul class="contact-list">
+                <li>
+                    Website:
+                    <a href="https://www.yachaytech.edu.ec/" target="_blank" rel="noopener">yachaytech.edu.ec</a>
+                    (opens in a new tab)
+                </li>
+                <li>
+                    Campus: <span lang="es">Hacienda San Jos&eacute;, San Miguel de
+                        Urcuqu&iacute;, Imbabura, Ecuador</span>
+                </li>
+                <li>
+                    Phone: (+593) 6 299 9500
+                </li>
+            </ul>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 William Garzon &amp; Freddy Valenzuela &ndash; Yachay Tech University</p>
+        <p>Web Applications &ndash; Workshop 3 &ndash; HTML5, CSS and jQuery</p>
+    </footer>
+
+    <!-- Our own script, loaded after the DOM and after jQuery -->
+    <script src="script.js"></script>
+
+</body>
+
+</html>
